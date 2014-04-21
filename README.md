@@ -1,9 +1,10 @@
-## Template Loader for Handlebars.js
-templateLoader.js provides a single, unified way to fetch Handlebar templates.
+## Template Loader for Handlebars
+templateLoader.js provides a single, unified way to fetch Handlebars templates.
 
 templateLoader loads your Handlebars template by checking if
-1. the template already exists in Handlebars.templates, OR
-2. the template markup is included in the current page markup.
+
+1.	the template already exists in Handlebars.templates, OR
+2.	the template markup is included in the current page markup.
 
 If the template isn't found locally, it will fire an ajax request to the server and grab it, compile it, and save it locally in case it's needed again later.
 
