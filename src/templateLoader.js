@@ -5,8 +5,8 @@
  */
 (function(root, factory) {
     'use strict';
-    if(typeof define ==='function' && define.amd) {
-        define(['jquery', 'handlebars'], factory);
+    if(typeof window.define ==='function' && window.define.amd) {
+        window.define(['jquery', 'handlebars'], factory);
     } else {
         window.templateLoader = factory(window.jQuery, window.Handlebars);
     }
@@ -15,7 +15,7 @@
     var templateLoader = {
 
         options: {
-            templateUrlRoot: '/static/templates/',
+            templateUrlRoot: '/templates/',
             templateExt: '.handlebars.html',
             templateLotSelectorId: 'templates'
         },
@@ -36,11 +36,11 @@
             }
             if(Handlebars.templates[templateName]) {
                 //look for it in the Handlebars namespace
-                returnPromise.resolve(Handlebars.templates[templateName]);
+                returnPromise.resolve(Handlebars.templates[templateName], templateName);
             } else if( tmpl.length ) {
                 //look for it in the DOM
                 Handlebars.templates[templateName] = compiledTmpl = Handlebars.compile(tmpl.html());
-                returnPromise.resolve(compiledTmpl);
+                returnPromise.resolve(compiledTmpl, templateName);
             } else {
                 if(this.requestedTemplates[templateName]) {
                     //this template has previously been requested and the ajax request to grab it is pending
@@ -51,7 +51,7 @@
                 //fire an ajax request to grab it
                 this.getTmplOverAjax(templateName).done(function(response) {
                     tmpl = self.ajaxHandler(response, templateName);
-                    returnPromise.resolve(tmpl);
+                    returnPromise.resolve(tmpl, templateName);
                 });
             }
             return returnPromise;
@@ -106,7 +106,7 @@
             return partialsPromiseArr;
         },
 
-        registerPartial: function(tmpl, html, tname) {
+        registerPartial: function(tmpl, tname) {
             Handlebars.registerPartial(tname, tmpl);
         },
 
@@ -126,7 +126,7 @@
                 //when all promises have returned...
                 //grab the last one... it's the main template
                 var mainTemplateArg = arguments[arguments.length-1];
-                templateFullyLoaded.resolve(mainTemplateArg[0], mainTemplateArg[1], mainTemplateArg[2]);
+                templateFullyLoaded.resolve.apply(templateFullyLoaded, mainTemplateArg);
             });
             return templateFullyLoaded;
         }
