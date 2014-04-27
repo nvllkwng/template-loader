@@ -1,7 +1,7 @@
 ## Template Loader for Handlebars
 templateLoader.js provides a single, unified way to fetch Handlebars templates.
 
-templateLoader loads your Handlebars template by checking if
+templateLoader loads your Handlebars template by checking if:
 
 1.	the template already exists in Handlebars.templates, OR
 2.	the template markup is included in the current page markup.
@@ -10,8 +10,8 @@ If the template isn't found locally, it will fire an ajax request to the server 
 
 
 ### Single Template Example
+fetch a single template named "user-list-tmpl"
 ```
-//fetch a single template named "user-list-tmpl"
 var templatePromise = templateLoader.get('user-list-tmpl');
 templatePromise.done(function(tmpl) {
 	//tmpl is the compiled Handlebars template function
@@ -20,8 +20,8 @@ templatePromise.done(function(tmpl) {
 ```
 
 ### Template with Partials Example
+list all partials required for the main template in an array as the second param
 ```
-//list all partials required for the main template in an array as the second param
 var templateWithPartialsPromise = templateLoader.get('user-page-tmpl', ['user-list-tmpl', 'teaser-tmpl']); 
 templateWithPartialsPromise.done(function(tmpl) {
 	//user-page-tmpl ready to use
@@ -44,10 +44,10 @@ templateLoader.setup({
 	templateExt: '.hbs'
 });
 ```
-If you're okay with the default options, templateLoader is ready to run without running .setup. Just include the script and start loading templates.
+If you're okay with the default options, templateLoader is ready to run without having to run .setup. Just include the script and start loading templates.
 
 ### AMD
-You can also load templateLoader as an RequireJS AMD module.
+You can also load templateLoader as a RequireJS AMD module.
 
 ### Dependencies
 jQuery, Handlebars
