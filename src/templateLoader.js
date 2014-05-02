@@ -28,7 +28,7 @@
 
         getSingleTemplate: function(templateName) {
             var tmpl = $('#' + templateName ),
-                returnPromise = $.Deferred(),
+                templateDeferred = $.Deferred(),
                 compiledTmpl,
                 self = this;
             if(!Handlebars.templates) {
@@ -36,25 +36,25 @@
             }
             if(Handlebars.templates[templateName]) {
                 //look for it in the Handlebars namespace
-                returnPromise.resolve(Handlebars.templates[templateName], templateName);
+                templateDeferred.resolve(Handlebars.templates[templateName], templateName);
             } else if( tmpl.length ) {
                 //look for it in the DOM
                 Handlebars.templates[templateName] = compiledTmpl = Handlebars.compile(tmpl.html());
-                returnPromise.resolve(compiledTmpl, templateName);
+                templateDeferred.resolve(compiledTmpl, templateName);
             } else {
                 if(this.requestedTemplates[templateName]) {
                     //this template has previously been requested and the ajax request to grab it is pending
                     return this.requestedTemplates[templateName];
                 }
                 //mark it as requested, so that subsequent request for the same template will not cause another ajax call
-                this.requestedTemplates[templateName] = returnPromise;
+                this.requestedTemplates[templateName] = templateDeferred;
                 //fire an ajax request to grab it
                 this.getTmplOverAjax(templateName).done(function(response) {
                     tmpl = self.ajaxHandler(response, templateName);
-                    returnPromise.resolve(tmpl, templateName);
+                    templateDeferred.resolve(tmpl, templateName);
                 });
             }
-            return returnPromise;
+            return templateDeferred.promise();
         },
         
         getTmplOverAjax: function(templateName) {
@@ -128,7 +128,7 @@
                 var mainTemplateArg = arguments[arguments.length-1];
                 templateFullyLoaded.resolve.apply(templateFullyLoaded, mainTemplateArg);
             });
-            return templateFullyLoaded;
+            return templateFullyLoaded.promise();
         }
     };
     //export
